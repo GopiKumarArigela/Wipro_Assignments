@@ -1,0 +1,5 @@
+package com.example.gow.paymentservice.controller;
+
+public class PaymentController {
+
+}

@@ -1,0 +1,31 @@
+package com.example.gk.deliveryservice.entities;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Delivery {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private Long orderId;
+
+    @NotBlank(message = "Delivery address is required")
+    private String deliveryAddress;
+
+    private LocalDateTime deliveryDate;
+
+    @Enumerated(EnumType.STRING)
+    private DeliveryStatus status;
+
+    private String notes;
+}

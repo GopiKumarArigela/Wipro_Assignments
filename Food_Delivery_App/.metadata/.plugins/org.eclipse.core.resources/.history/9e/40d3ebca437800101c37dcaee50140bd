@@ -1,0 +1,99 @@
+package com.example.gow.orderservice.service;
+
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import com.example.gow.orderservice.datatransferobject.OrderItemResponseDTO;
+import com.example.gow.orderservice.datatransferobject.OrderRequestDTO;
+import com.example.gow.orderservice.datatransferobject.OrderResponseDTO;
+import com.example.gow.orderservice.entities.Order;
+import com.example.gow.orderservice.entities.OrderItem;
+import com.example.gow.orderservice.repository.OrderRepository;
+
+import jakarta.validation.Valid;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class OrderService {
+
+    private final OrderRepository orderRepository;
+    private final CustomerRepository customerRepository;
+    private final RestaurantRepository restaurantRepository;
+
+    public OrderResponseDTO createOrder(OrderRequestDTO request) {
+        // Fetch related entities
+        Customer customer = customerRepository.findById(request.getCustomerId())
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        Restaurant restaurant = restaurantRepository.findById(request.getRestaurantId())
+                .orElseThrow(() -> new RuntimeException("Restaurant not found"));
+
+        // Create order entity
+        Order order = new Order();
+        order.setOrderNumber(UUID.randomUUID().toString());
+        order.setCustomerId(customer.getId());
+        order.setRestaurantId(restaurant.getId());
+        order.setOrderDate(LocalDateTime.now());
+        order.setStatus("CREATED");
+        order.setNotes(request.getNotes());
+
+        // Map items
+        List<OrderItem> orderItems = request.getItems().stream()
+                .map(itemDTO -> {
+                    OrderItem item = new OrderItem();
+                    item.setItemName(itemDTO.getItemName());
+                    item.setQuantity(itemDTO.getQuantity());
+                    item.setUnitPrice(itemDTO.getUnitPrice());
+                    item.setOrder(order);
+                    return item;
+                })
+                .collect(Collectors.toList());
+
+        order.setItems(orderItems);
+
+        // Calculate total amount
+        double totalAmount = orderItems.stream()
+                .mapToDouble(i -> i.getQuantity() * i.getUnitPrice())
+                .sum();
+        order.setTotalAmount(totalAmount);
+
+        // Save order
+        Order savedOrder = orderRepository.save(order);
+
+        // Convert to Response DTO
+        return mapToOrderResponseDTO(savedOrder);
+    }
+
+    private OrderResponseDTO mapToOrderResponseDTO(Order order) {
+        OrderResponseDTO dto = new OrderResponseDTO();
+        dto.setId(order.getId());
+        dto.setOrderNumber(order.getOrderNumber());
+        dto.setCustomerId(order.getCustomerId());
+        dto.setRestaurantId(order.getRestaurantId());
+        dto.setOrderDate(order.getOrderDate());
+        dto.setStatus(order.getStatus());
+        dto.setNotes(order.getNotes());
+        dto.setTotalAmount(order.getTotalAmount());
+
+        List<OrderItemResponseDTO> items = order.getItems().stream()
+                .map(item -> {
+                    OrderItemResponseDTO itemDTO = new OrderItemResponseDTO();
+                    itemDTO.setItemName(item.getItemName());
+                    itemDTO.setQuantity(item.getQuantity());
+                    itemDTO.setUnitPrice(item.getUnitPrice());
+                    return itemDTO;
+                })
+                .collect(Collectors.toList());
+
+        dto.setItems(items);
+        return dto;
+    }
+
+	
+}

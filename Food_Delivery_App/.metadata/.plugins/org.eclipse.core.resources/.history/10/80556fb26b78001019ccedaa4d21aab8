@@ -1,0 +1,5 @@
+package com.example.gow.deliveryservice.repository;
+
+public class DeliveryRepository {
+
+}

@@ -1,0 +1,7 @@
+package com.example.gow.messageservice.enums;
+
+public enum MessageStatus {
+    SENT,
+    DELIVERED,
+    READ
+}

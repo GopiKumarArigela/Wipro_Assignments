@@ -1,0 +1,25 @@
+package com.example.gow.restaurantservice.entities;
+
+import jakarta.persistence.*;
+import lombok.*;
+import java.util.List;
+
+@Entity
+@Table(name = "restaurants")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Restaurant {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long resId;
+
+    private String name;
+    private String address;
+    private String type;
+
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Menu> menuList;
+}

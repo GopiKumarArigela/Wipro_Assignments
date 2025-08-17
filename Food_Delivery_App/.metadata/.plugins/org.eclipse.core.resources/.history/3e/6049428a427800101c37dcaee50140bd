@@ -1,0 +1,12 @@
+package com.example.gow.orderservice.datatransferobject;
+
+import lombok.Data;
+import java.util.List;
+
+@Data
+public class OrderRequestDTO {
+    private Long customerId;
+    private Long restaurantId;
+    private String notes;
+    private List<OrderItemRequestDTO> items;
+}

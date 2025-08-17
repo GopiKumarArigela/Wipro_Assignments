@@ -1,0 +1,58 @@
+package com.example.gow.messageservice.controller;
+
+import com.example.gow.messageservice.dto.MessageRequestDTO;
+import com.example.gow.messageservice.dto.MessageResponseDTO;
+import com.example.gow.messageservice.enums.MessageStatus;
+import com.example.gow.messageservice.service.MessageService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
+
+import jakarta.validation.Valid;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/messages")
+@RequiredArgsConstructor
+public class MessageController {
+
+    private final MessageService messageService;
+
+    @PostMapping
+    public ResponseEntity<MessageResponseDTO> sendMessage(@Valid @RequestBody MessageRequestDTO request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(messageService.sendMessage(request));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<MessageResponseDTO> getMessage(@PathVariable Long id) {
+        return ResponseEntity.ok(messageService.getMessage(id));
+    }
+
+    @GetMapping("/sender/{senderId}")
+    public ResponseEntity<List<MessageResponseDTO>> getBySender(@PathVariable Long senderId) {
+        return ResponseEntity.ok(messageService.getMessagesBySender(senderId));
+    }
+
+    @GetMapping("/receiver/{receiverId}")
+    public ResponseEntity<List<MessageResponseDTO>> getByReceiver(@PathVariable Long receiverId) {
+        return ResponseEntity.ok(messageService.getMessagesByReceiver(receiverId));
+    }
+
+    @GetMapping("/order/{orderId}")
+    public ResponseEntity<List<MessageResponseDTO>> getByOrder(@PathVariable Long orderId) {
+        return ResponseEntity.ok(messageService.getMessagesByOrder(orderId));
+    }
+
+    @PatchMapping("/{id}/status/{status}")
+    public ResponseEntity<MessageResponseDTO> updateStatus(@PathVariable Long id,
+                                                           @PathVariable MessageStatus status) {
+        return ResponseEntity.ok(messageService.updateStatus(id, status));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteMessage(@PathVariable Long id) {
+        messageService.deleteMessage(id);
+        return ResponseEntity.noContent().build();
+    }
+}

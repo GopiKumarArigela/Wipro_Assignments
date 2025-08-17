@@ -1,0 +1,10 @@
+package com.example.gow.orderservice.datatransferobject;
+
+import lombok.Data;
+
+@Data
+public class OrderItemResponseDTO {
+    private String itemName;
+    private int quantity;
+    private double unitPrice;
+}

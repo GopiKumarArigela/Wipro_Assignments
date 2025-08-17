@@ -1,0 +1,31 @@
+package com.example.gow.orderservice.aop;
+
+import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.*;
+import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.stereotype.Component;
+
+@Aspect
+@Component
+@Slf4j
+public class LoggingAspect {
+
+    // log timing and errors for all public methods in controllers & services
+    @Around("execution(public * com.example.app.controller..*(..)) || execution(public * com.example.app.service..*(..))")
+    public Object logAround(ProceedingJoinPoint pjp) throws Throwable {
+        long start = System.currentTimeMillis();
+        MethodSignature sig = (MethodSignature) pjp.getSignature();
+        String method = sig.getDeclaringType().getSimpleName() + "." + sig.getName();
+
+        log.info("➡️  {} args={}", method, java.util.Arrays.toString(pjp.getArgs()));
+        try {
+            Object result = pjp.proceed();
+            log.info("✅ {} took {} ms", method, (System.currentTimeMillis() - start));
+            return result;
+        } catch (Throwable t) {
+            log.error("❌ {} failed after {} ms: {}", method, (System.currentTimeMillis() - start), t.getMessage());
+            throw t;
+        }
+    }
+}

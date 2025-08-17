@@ -1,0 +1,5 @@
+package com.example.gow.deliveryservice.dto;
+
+public class DeliveryRequestDTO {
+
+}

@@ -1,0 +1,57 @@
+{"properties": [
+  {
+    "name": "spring.cloud.gateway.server.webflux.discovery.locator.enabled",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.cloud.gateway.server.webflux.discovery.locator.enabled'"
+  },
+  {
+    "name": "spring.cloud.gateway.server.webflux.discovery.locator.lower-case-service-id",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.cloud.gateway.server.webflux.discovery.locator.lower-case-service-id'"
+  },
+  {
+    "name": "spring.cloud.gateway.server.webflux.routes[0].id",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.cloud.gateway.server.webflux.routes[0].id'"
+  },
+  {
+    "name": "spring.cloud.gateway.server.webflux.routes[0].uri",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.cloud.gateway.server.webflux.routes[0].uri'"
+  },
+  {
+    "name": "spring.cloud.gateway.server.webflux.routes[0].predicates[0]",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.cloud.gateway.server.webflux.routes[0].predicates[0]'"
+  },
+  {
+    "name": "spring.cloud.gateway.server.webflux.routes[5].id",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.cloud.gateway.server.webflux.routes[5].id'"
+  },
+  {
+    "name": "spring.cloud.gateway.server.webflux.routes[5].uri",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.cloud.gateway.server.webflux.routes[5].uri'"
+  },
+  {
+    "name": "spring.cloud.gateway.server.webflux.routes[5].predicates[0]",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.cloud.gateway.server.webflux.routes[5].predicates[0]'"
+  },
+  {
+    "name": "spring.cloud.gateway.server.webflux.routes[5].predicates[0]",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.cloud.gateway.server.webflux.routes[5].predicates[0]'"
+  }
+]}{
+    "name": "spring.cloud.gateway.server.webflux.routes[5].id",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.cloud.gateway.server.webflux.routes[5].id'"
+  }
+]}{
+    "name": "spring.cloud.gateway.server.webflux.routes[5].uri",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.cloud.gateway.server.webflux.routes[5].uri'"
+  }
+]}
