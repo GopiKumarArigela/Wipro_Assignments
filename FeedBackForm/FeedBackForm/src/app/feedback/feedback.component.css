@@ -1,0 +1,66 @@
+.feedbackForm {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #f8bfbf, #b5dfff, #d4ffea);
+  padding: 20px;
+}
+
+mat-card {
+  background-color: #ffffff;
+  color: #333;
+  max-width: 480px;
+  width: 100%;
+  padding: 30px 25px;
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+}
+
+mat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+}
+
+mat-card-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 25px;
+  color: #2c3e50;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+mat-form-field {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+mat-form-field.mat-focused .mat-form-field-label {
+  color: #0077ff !important;
+}
+
+input,
+textarea {
+  color: #333;
+}
+
+button {
+  margin-top: 15px;
+  width: 100%;
+  font-weight: bold;
+  border-radius: 8px;
+  padding: 10px 0;
+  font-size: 1rem;
+  background: linear-gradient(90deg, #0077ff, #00c6ff);
+  color: white;
+  box-shadow: 0 4px 10px rgba(0, 119, 255, 0.4);
+  transition: background 0.3s ease-in-out, transform 0.2s;
+}
+
+button:hover {
+  background: linear-gradient(90deg, #0059d6, #00a4d6);
+  transform: scale(1.03);
+}

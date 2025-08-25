@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Student CRUD Application</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
+          integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f4f5fc;
+            margin: 0;
+            padding: 12px;
+            color: #333;
+        }
+
+        h2 {
+            text-align: center;
+            color: #004d4d;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            background-color: #ffffff;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            max-width: 98%;
+            margin: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            min-width: 600px;
+        }
+
+        th, td {
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background-color: #5c6bc0;  /* Indigo */
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f0f5ff;
+        }
+
+        tr:hover {
+            background-color: #d6eaf8;
+        }
+
+        a i {
+            font-size: 0.8rem;
+            color: #00796b;
+        }
+
+        a:hover i {
+            color: #004d40;
+        }
+
+        button {
+            padding: 6px 16px;
+            background-color: #5c6bc0;
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 5px;
+            margin-top: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #3949ab;
+        }
+
+        @media (max-width: 600px) {
+            table {
+                font-size: 11px;
+            }
+
+            th, td {
+                padding: 6px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<h2><b>Update</b> the Student Information</h2>
+<h2>All Students Data</h2>
+
+<div class="table-container">
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Mail</th>
+            <th>Roll No</th>
+            <th>Age</th>
+            <th>DOB</th>
+            <th>Gender</th>
+            <th>Address</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="c : ${list}">
+            <td th:text="${c.id}"></td>
+            <td th:text="${c.studentName}"></td>
+            <td th:text="${c.studentMail}"></td>
+            <td th:text="${c.rollNo}"></td>
+            <td th:text="${c.age}"></td>
+            <td th:text="${c.dob}"></td>
+            <td th:text="${c.gender}"></td>
+            <td th:text="${c.address}"></td>
+            <td>
+                <a th:href="@{'/edit/' + ${c.id}}">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div style="text-align: center;">
+        <a href="/"><button>Back to Main Page</button></a>
+    </div>
+</div>
+
+</body>
+</html>

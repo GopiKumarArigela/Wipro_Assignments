@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+     <title >Student CRUD Application</title>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+      
+ <h2> All Students Data here!</h2>
+
+   <table border="1">
+      <tr>
+        <th>Id </th>
+        <th>Name</th>
+        <th>Mail</th>
+        <th>RollNo</th>
+        <th>Age</th>
+        <th>DOB</th>
+        <th>Gender</th>
+        <th>Address</th>
+        <th>Action</th>
+      </tr>
+      
+      
+      <tr th:each="c:${list}">
+          <td th:text="${c.id}"></td> 
+          <td th:text="${c.studentName}"></td>
+          <td th:text="${c.studentMail}"></td>
+          <td th:text="${c.rollNo}"></td>
+          <td th:text="${c.age}"></td>
+          <td th:text="${c.dob}"></td>
+          <td th:text="${c.gender}"></td>
+          <td th:text="${c.address}"></td>
+          
+          <td><a th:href="@{'/edit/'+${c.id}}"><i class="fa-solid fa-pen-to-square" style="color: #0300a3;"></i></a>
+          
+      </tr>
+      
+      
+   </table>
+
+</body>
+</html>
