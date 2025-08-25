@@ -1,0 +1,15 @@
+package com.example.gk.restaurantservice.repositories;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.example.gk.restaurantservice.entities.Restaurant;
+
+@Repository
+public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
+    // JpaRepository already has:
+    // - findAll(Pageable pageable) → for pagination
+    // - findById(Long id) → for getting by ID
+    // - save(Restaurant restaurant) → for insert/update
+    // - deleteById(Long id) → for delete
+}

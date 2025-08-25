@@ -1,0 +1,25 @@
+package com.example.gow.deliveryservice.dto;
+
+import com.example.gow.deliveryservice.entities.DeliveryStatus;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class DeliveryRequestDTO {
+    @NotBlank(message = "Delivery address is required")
+    private String deliveryAddress;
+
+    @NotBlank(message = "Recipient name is required")
+    private String recipientName;
+
+    @NotBlank(message = "Contact number is required")
+    private String contactNumber;
+
+	
+
+    // getters and setters
+}

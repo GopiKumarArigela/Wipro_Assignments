@@ -1,0 +1,52 @@
+package com.example.gow.orderservice.controller;
+
+import com.example.gow.orderservice.datatransferobject.*;
+import com.example.gow.orderservice.entities.OrderStatus;
+import com.example.gow.orderservice.service.OrderService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/orders")
+@RequiredArgsConstructor
+public class OrderController {
+
+    private final OrderService orderService;
+
+    @PostMapping("/order")
+    public ResponseEntity<OrderResponseDTO> placeOrder(@Valid @RequestBody OrderRequestDTO orderRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(orderService.createOrder(orderRequest));
+    }
+
+    @GetMapping("/{orderId}")
+    public ResponseEntity<OrderResponseDTO> getOrderById(@PathVariable Long orderId) {
+        return ResponseEntity.ok(orderService.getOrder(orderId));
+    }
+
+    @GetMapping("/customer/{customerId}")
+    public ResponseEntity<List<OrderResponseDTO>> getOrdersByCustomer(@PathVariable Long customerId) {
+        return ResponseEntity.ok(orderService.getByCustomer(customerId));
+    }
+
+    @GetMapping("/restaurant/{restaurantId}")
+    public ResponseEntity<List<OrderResponseDTO>> getOrdersByRestaurant(@PathVariable Long restaurantId) {
+        return ResponseEntity.ok(orderService.getByRestaurant(restaurantId));
+    }
+
+    @PatchMapping("/{orderId}/status/{status}")
+    public ResponseEntity<OrderResponseDTO> updateOrderStatus(@PathVariable Long orderId,
+                                                              @PathVariable OrderStatus status) {
+        return ResponseEntity.ok(orderService.updateStatus(orderId, status));
+    }
+
+    @DeleteMapping("/{orderId}")
+    public ResponseEntity<Void> deleteOrder(@PathVariable Long orderId) {
+        orderService.deleteOrder(orderId);
+        return ResponseEntity.noContent().build();
+    }
+}

@@ -1,0 +1,5 @@
+package com.example.gow.orderservice.entities;
+
+public enum OrderStatus {
+    CREATED, CONFIRMED, PREPARING, OUT_FOR_DELIVERY, COMPLETED, CANCELLED
+}

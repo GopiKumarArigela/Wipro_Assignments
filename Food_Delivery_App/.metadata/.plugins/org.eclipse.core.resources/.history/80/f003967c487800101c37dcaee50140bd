@@ -1,0 +1,96 @@
+package com.example.gow.orderservice.service;
+
+import com.example.gow.orderservice.datatransferobject.*;
+import com.example.gow.orderservice.entities.*;
+import com.example.gow.orderservice.exception.ResourceNotFoundException;
+import com.example.gow.orderservice.repository.OrderRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class OrderService {
+
+    private final OrderRepository orderRepository;
+
+    public OrderResponseDTO createOrder(OrderRequestDTO request) {
+        Order order = new Order();
+        order.setOrderNumber(UUID.randomUUID().toString());
+        order.setCustomerId(request.getCustomerId());
+        order.setRestaurantId(request.getRestaurantId());
+        order.setOrderDate(LocalDateTime.now());
+        order.setStatus(OrderStatus.CREATED);
+        order.setNotes(request.getNotes());
+
+        List<OrderItem> orderItems = request.getItems().stream()
+                .map(i -> {
+                    OrderItem item = new OrderItem();
+                    item.setItemName(i.getItemName());
+                    item.setQuantity(i.getQuantity());
+                    item.setUnitPrice(i.getUnitPrice());
+                    item.setOrder(order);
+                    return item;
+                }).collect(Collectors.toList());
+
+        order.setItems(orderItems);
+        order.setTotalAmount(orderItems.stream()
+                .mapToDouble(i -> i.getQuantity() * i.getUnitPrice()).sum());
+
+        Order saved = orderRepository.save(order);
+        return mapToDTO(saved);
+    }
+
+    public OrderResponseDTO getOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+        return mapToDTO(order);
+    }
+
+    public List<OrderResponseDTO> getByCustomer(Long customerId) {
+        return orderRepository.findByCustomerId(customerId).stream()
+                .map(this::mapToDTO).collect(Collectors.toList());
+    }
+
+    public List<OrderResponseDTO> getByRestaurant(Long restaurantId) {
+        return orderRepository.findByRestaurantId(restaurantId).stream()
+                .map(this::mapToDTO).collect(Collectors.toList());
+    }
+
+    public OrderResponseDTO updateStatus(Long orderId, OrderStatus status) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+        order.setStatus(status);
+        return mapToDTO(orderRepository.save(order));
+    }
+
+    public void deleteOrder(Long orderId) {
+        if (!orderRepository.existsById(orderId)) {
+            throw new ResourceNotFoundException("Order not found");
+        }
+        orderRepository.deleteById(orderId);
+    }
+
+    private OrderResponseDTO mapToDTO(Order order) {
+        return new OrderResponseDTO(
+                order.getId(),
+                order.getOrderNumber(),
+                order.getCustomerId(),
+                order.getRestaurantId(),
+                order.getOrderDate(),
+                order.getNotes(),
+                order.getTotalAmount(),
+                order.getStatus().name(),
+                order.getItems().stream()
+                        .map(i -> new OrderItemResponseDTO(
+                                i.getItemName(),
+                                i.getQuantity(),
+                                i.getUnitPrice()))
+                        .collect(Collectors.toList())
+        );
+    }
+}

@@ -1,0 +1,94 @@
+package com.example.gow.orderservice.service;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.example.gow.orderservice.entities.Order;
+import com.example.gow.orderservice.entities.OrderItem;
+import com.example.gow.orderservice.entities.OrderStatus;
+import com.example.gow.orderservice.repository.OrderRepository;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class OrderService {
+
+    private final OrderRepository orderRepository;
+
+    @Transactional
+    public Order placeOrder(Order request) {
+        if (request.getItems() == null || request.getItems().isEmpty()) {
+            throw new BadRequestException("Order must contain at least one item");
+        }
+        if (request.getCustomerId() == null || request.getRestaurantId() == null) {
+            throw new BadRequestException("customerId and restaurantId are required");
+        }
+
+        Order order = new Order();
+        order.setOrderNumber(UUID.randomUUID().toString());
+        order.setOrderDate(LocalDateTime.now());
+        order.setCustomerId(request.getCustomerId());
+        order.setRestaurantId(request.getRestaurantId());
+        order.setStatus(OrderStatus.CREATED);
+        order.setNotes(request.getNotes());
+
+        BigDecimal total = BigDecimal.ZERO;
+        for (OrderItem incoming : request.getItems()) {
+            if (incoming.getQuantity() == null || incoming.getQuantity() < 1) {
+                throw new BadRequestException("Quantity must be at least 1 for item: " + incoming.getItemName());
+            }
+            if (incoming.getUnitPrice() == null || incoming.getUnitPrice().longValue() < 1) {
+                throw new BadRequestException("Unit price must be >= 1 for item: " + incoming.getItemName());
+            }
+            OrderItem item = OrderItem.builder()
+                    .itemName(incoming.getItemName())
+                    .quantity(incoming.getQuantity())
+                    .unitPrice(incoming.getUnitPrice())
+                    .order(order)
+                    .build();
+            order.addItem(item);
+            total = total.add(item.getLineTotal());
+        }
+        order.setTotalAmount(total);
+
+        Order saved = orderRepository.save(order);
+        log.info("Order placed: {} (id={}) total={}", saved.getOrderNumber(), saved.getOrderId(), saved.getTotalAmount());
+        return saved;
+    }
+
+    @Transactional(readOnly = true)
+    public Order getOrder(Long id) {
+        return orderRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found: " + id));
+    }
+
+    @Transactional(readOnly = true)
+    public List<Order> getByCustomer(Long customerId) {
+        return orderRepository.findByCustomerId(customerId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Order> getByRestaurant(Long restaurantId) {
+        return orderRepository.findByRestaurantId(restaurantId);
+    }
+
+    @Transactional
+    public Order updateStatus(Long id, OrderStatus status) {
+        Order order = getOrder(id);
+        order.setStatus(status);
+        return orderRepository.save(order);
+    }
+
+    @Transactional
+    public void deleteOrder(Long id) {
+        Order order = getOrder(id);
+        orderRepository.delete(order);
+    }
+}

@@ -1,0 +1,123 @@
+package com.example.gow.orderservice.service;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import com.example.gow.orderservice.datatransferobject.OrderItemResponseDTO;
+import com.example.gow.orderservice.datatransferobject.OrderRequestDTO;
+import com.example.gow.orderservice.datatransferobject.OrderResponseDTO;
+import com.example.gow.orderservice.entities.Customer;
+import com.example.gow.orderservice.entities.Order;
+import com.example.gow.orderservice.entities.OrderItem;
+import com.example.gow.orderservice.entities.OrderStatus;
+import com.example.gow.orderservice.entities.Restaurant;
+import com.example.gow.orderservice.repository.CustomerRepository;
+import com.example.gow.orderservice.repository.OrderRepository;
+import com.example.gow.orderservice.repository.RestaurantRepository;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class OrderService {
+
+    private final OrderRepository orderRepository;
+    private final CustomerRepository customerRepository;
+    private final RestaurantRepository restaurantRepository;
+
+    public OrderResponseDTO createOrder(OrderRequestDTO request) {
+        Customer customer = customerRepository.findById(request.getCustomerId())
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        Restaurant restaurant = restaurantRepository.findById(request.getRestaurantId())
+                .orElseThrow(() -> new RuntimeException("Restaurant not found"));
+
+        Order order = new Order();
+        order.setOrderNumber(UUID.randomUUID().toString());
+        order.setCustomerId(customer.getId());
+        order.setRestaurantId(restaurant.getId());
+        order.setOrderDate(LocalDateTime.now());
+        order.setStatus(OrderStatus.CREATED.name());
+        order.setNotes(request.getNotes());
+
+        List<OrderItem> orderItems = request.getItems().stream()
+                .map(itemDTO -> {
+                    OrderItem item = new OrderItem();
+                    item.setItemName(itemDTO.getItemName());
+                    item.setQuantity(itemDTO.getQuantity());
+                    item.setUnitPrice(itemDTO.getUnitPrice());
+                    item.setOrder(order);
+                    return item;
+                })
+                .collect(Collectors.toList());
+
+        order.setItems(orderItems);
+
+        double totalAmount = orderItems.stream()
+                .mapToDouble(i -> i.getQuantity() * i.getUnitPrice())
+                .sum();
+        order.setTotalAmount(totalAmount);
+
+        Order savedOrder = orderRepository.save(order);
+
+        return mapToOrderResponseDTO(savedOrder);
+    }
+
+    public OrderResponseDTO getOrder(Long orderId) {
+        return orderRepository.findById(orderId)
+                .map(this::mapToOrderResponseDTO)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+    }
+
+    public List<OrderResponseDTO> getByCustomer(Long customerId) {
+        return orderRepository.findByCustomerId(customerId)
+                .stream()
+                .map(this::mapToOrderResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<OrderResponseDTO> getByRestaurant(Long restaurantId) {
+        return orderRepository.findByRestaurantId(restaurantId)
+                .stream()
+                .map(this::mapToOrderResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    public OrderResponseDTO updateStatus(Long orderId, OrderStatus status) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+        order.setStatus(status.name());
+        Order updated = orderRepository.save(order);
+        return mapToOrderResponseDTO(updated);
+    }
+
+    public void deleteOrder(Long orderId) {
+        orderRepository.deleteById(orderId);
+    }
+
+    private OrderResponseDTO mapToOrderResponseDTO(Order order) {
+        OrderResponseDTO dto = new OrderResponseDTO();
+        dto.setId(order.getId());
+        dto.setOrderNumber(order.getOrderNumber());
+        dto.setCustomerId(order.getCustomerId());
+        dto.setRestaurantId(order.getRestaurantId());
+        dto.setOrderDate(order.getOrderDate());
+        dto.setStatus(order.getStatus());
+        dto.setNotes(order.getNotes());
+        dto.setTotalAmount(order.getTotalAmount());
+
+        List<OrderItemResponseDTO> items = order.getItems().stream()
+                .map(item -> new OrderItemResponseDTO(
+                        item.getItemName(),
+                        item.getQuantity(),
+                        item.getUnitPrice()
+                ))
+                .collect(Collectors.toList());
+
+        dto.setItems(items);
+        return dto;
+    }
+}

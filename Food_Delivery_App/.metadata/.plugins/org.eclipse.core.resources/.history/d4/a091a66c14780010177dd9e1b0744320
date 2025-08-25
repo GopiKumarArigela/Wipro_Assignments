@@ -1,0 +1,5 @@
+package com.example.gow.orderservice.aop;
+
+public class LoggingAspect {
+
+}

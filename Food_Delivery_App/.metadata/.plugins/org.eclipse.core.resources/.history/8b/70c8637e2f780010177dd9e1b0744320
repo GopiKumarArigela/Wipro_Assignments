@@ -1,0 +1,55 @@
+package com.example.gow.orderservice.controller;
+
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
+
+import com.example.gow.orderservice.entities.Order;
+import com.example.gow.orderservice.entities.OrderStatus;
+import com.example.gow.orderservice.service.OrderService;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/orders")
+@RequiredArgsConstructor
+public class OrderController {
+
+    private final OrderService orderService;
+
+    // Create/place an order (body = Order with items, customerId, restaurantId)
+    @PostMapping
+    public ResponseEntity<Order> placeOrder(@Valid @RequestBody Order order) {
+        Order saved = orderService.placeOrder(order);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+    }
+
+    @GetMapping("/{orderId}")
+    public ResponseEntity<Order> get(@PathVariable Long orderId) {
+        return ResponseEntity.ok(orderService.getOrder(orderId));
+    }
+
+    @GetMapping("/by-customer/{customerId}")
+    public ResponseEntity<List<Order>> byCustomer(@PathVariable Long customerId) {
+        return ResponseEntity.ok(orderService.getByCustomer(customerId));
+    }
+
+    @GetMapping("/by-restaurant/{restaurantId}")
+    public ResponseEntity<List<Order>> byRestaurant(@PathVariable Long restaurantId) {
+        return ResponseEntity.ok(orderService.getByRestaurant(restaurantId));
+    }
+
+    @PatchMapping("/{orderId}/status/{status}")
+    public ResponseEntity<Order> updateStatus(@PathVariable Long orderId,
+                                              @PathVariable OrderStatus status) {
+        return ResponseEntity.ok(orderService.updateStatus(orderId, status));
+    }
+
+    @DeleteMapping("/{orderId}")
+    public ResponseEntity<Void> delete(@PathVariable Long orderId) {
+        orderService.deleteOrder(orderId);
+        return ResponseEntity.noContent().build();
+    }
+}

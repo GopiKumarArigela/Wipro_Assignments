@@ -1,0 +1,28 @@
+package com.example.gow.customerservice.entities;
+
+import java.util.List;
+
+
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+
+public class Customer {
+
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long custId;
+
+    
+    private String customerName;
+
+    private Long phoneNum;
+    
+    private String Address;
+
+	
+
+   
+
+}

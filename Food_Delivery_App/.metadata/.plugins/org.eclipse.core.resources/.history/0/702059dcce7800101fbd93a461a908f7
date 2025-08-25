@@ -1,0 +1,33 @@
+package com.example.gow.messageservice.entities;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Message {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotBlank(message = "Sender ID is required")
+    private Long senderId;
+
+    @NotBlank(message = "Receiver ID is required")
+    private Long receiverId;
+
+    @NotBlank(message = "Content is required")
+    private String content;
+
+    private LocalDateTime timestamp;
+
+    @Enumerated(EnumType.STRING)
+    private MessageStatus status;
+}

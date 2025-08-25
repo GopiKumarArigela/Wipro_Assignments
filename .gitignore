@@ -1,0 +1,21 @@
+# Java
+target/
+*.class
+
+# Spring Boot
+*.jar
+*.war
+*.ear
+
+# Node.js
+node_modules/
+dist/
+
+# IDEs
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db

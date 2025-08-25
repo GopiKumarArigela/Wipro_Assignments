@@ -1,0 +1,5 @@
+package com.example.gow.paymentservice.entities;
+
+public class Payment {
+
+}
