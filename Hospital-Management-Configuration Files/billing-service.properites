@@ -1,0 +1,24 @@
+spring.application.name=billing-service
+server.port=8086
+
+# Eureka
+eureka.client.service-url.defaultZone=http://localhost:8761/eureka/
+eureka.client.register-with-eureka=true
+eureka.client.fetch-registry=true
+
+# MySQL Database (Structured)
+spring.datasource.url=jdbc:mysql://localhost:3306/billingdb
+spring.datasource.username=root
+spring.datasource.password=root
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+# Kafka (for billing events)
+spring.kafka.bootstrap-servers=localhost:9092
+spring.kafka.producer.key-serializer=org.apache.kafka.common.serialization.StringSerializer
+spring.kafka.producer.value-serializer=org.apache.kafka.common.serialization.StringSerializer
+
+# MongoDB (if any billing logs are stored unstructured)
+spring.data.mongodb.host=localhost
+spring.data.mongodb.port=27017
+spring.data.mongodb.database=billingdb_records
